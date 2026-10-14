@@ -1,0 +1,1 @@
+ALTER TABLE receita ADD COLUMN ingredientes VARCHAR(300);

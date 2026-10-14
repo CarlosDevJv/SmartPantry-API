@@ -1,0 +1,15 @@
+CREATE TABLE tb_users(
+    id VARCHAR(300) PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha VARCHAR(300) NOT NULL UNIQUE
+);
+
+CREATE TABLE ingrediente(
+    id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    categoria VARCHAR(70) NOT NULL,
+    unidadeMedida VARCHAR(50) NOT NULL
+);
+
+
