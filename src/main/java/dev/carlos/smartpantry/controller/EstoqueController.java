@@ -26,9 +26,15 @@ public class EstoqueController {
         estoqueService.estoqueInsertAll(email, estoqueRegister);
     }
 
-    @GetMapping("/listaIngredientes/{email}")
-    public ResponseEntity getList(@PathVariable String email){
-        System.out.println(estoqueService.findAllByUser(email));
-        return ResponseEntity.ok().body(estoqueService.findAllByUser(email));
-    }
+//    @GetMapping("/listaIngredientes/{email}")
+//    public ResponseEntity getList(@PathVariable String email){
+//        System.out.println(estoqueService.findAllByUser(email));
+//        return ResponseEntity.ok().body(estoqueService.findAllByUser(email));
+//    }
+
+//    @GetMapping("/validadeIngredientes/{email}")
+//    public ResponseEntity validade(@PathVariable String email){
+//        System.out.println(estoqueService.vencimentoAutomatico(email));
+//        return ResponseEntity.ok().body(estoqueService.vencimentoAutomatico(email));
+//    }
 }

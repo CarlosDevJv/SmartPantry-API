@@ -1,6 +1,6 @@
 CREATE TABLE receita(
     id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id VARCHAR(200) NOT NULL,
+    user_id INTEGER NOT NULL,
     titulo VARCHAR(150) NOT NULL,
     preparo VARCHAR(1500) NOT NULL,
     dataCriacao TIMESTAMP with time zone DEFAULT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE receita(
 
 CREATE TABLE item_estoque(
     id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id VARCHAR(200) NOT NULL,
+    user_id INTEGER NOT NULL,
     ingrediente_id INTEGER NOT NULL,
     quantidade INTEGER NOT NULL,
     dataValidade TIMESTAMP with time zone DEFAULT NULL,

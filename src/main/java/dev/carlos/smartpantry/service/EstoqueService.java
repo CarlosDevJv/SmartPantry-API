@@ -9,7 +9,10 @@ import dev.carlos.smartpantry.repository.EstoqueRepository;
 import dev.carlos.smartpantry.repository.IngredienteRepository;
 import dev.carlos.smartpantry.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
@@ -31,7 +34,7 @@ public class EstoqueService {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public void estoqueInsert(String email, EstoqueRegister estoqueRegister){
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não cadastrado"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("USUÁRIO INCORRETO"));
         Ingrediente ingrediente = ingredienteRepository.findByNome(estoqueRegister.nomeIngrediente()).orElseThrow(() -> new IllegalArgumentException("Ingrediente não cadastrado"));
         if (user != null && ingrediente != null){
             ItemEstoque estoque = new ItemEstoque();
@@ -46,13 +49,13 @@ public class EstoqueService {
     }
 
     public void estoqueInsertAll(String email, List<EstoqueRegister> listEstoqueRegister){
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não cadastrado"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("USUÁRIO INCORRETO"));
 
         List<Ingrediente> ingredientes = converterIngredientes(listEstoqueRegister);
         if (ingredientes != null){
             for (int i = 0; i < ingredientes.size(); i++) {
                 ItemEstoque estoque = new ItemEstoque();
-                if (estoqueRepository.findByUser_idAndIngrediente_id(user, ingredientes.get(i)).isEmpty()) {
+                if (estoqueRepository.findByUser_idAndIngrediente_id(ingredientes.get(i)).isEmpty()) {
                     estoque.setUser_id(user);
                     estoque.setIngrediente_id(ingredientes.get(i));
                     estoque.setStatus(StatusIngrediente.valueOf(listEstoqueRegister.get(i).status()));
@@ -61,7 +64,7 @@ public class EstoqueService {
                     estoqueRepository.save(estoque);
                 }
                 else {
-                    estoque = estoqueRepository.findByUser_idAndIngrediente_id(user, ingredientes.get(i)).orElseThrow();
+                    estoque = estoqueRepository.findByUser_idAndIngrediente_id(ingredientes.get(i)).orElseThrow();
                     estoque.setQuantidade(estoque.getQuantidade().add(listEstoqueRegister.get(i).quantidade()));
                     estoque.setDataValidade(LocalDate.parse(listEstoqueRegister.get(i).dataValidade(), dateTimeFormatter));
                     estoqueRepository.save(estoque);
@@ -71,15 +74,12 @@ public class EstoqueService {
 
     }
 
-    public List<String> findAllByUser(String email){
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("USUÁRIO NÃO CADASTRADO"));
-       estoqueRepository.findAllByUser_id(user);
-        return estoqueRepository.findAllByUser_id(user);
-    }
 
     public List<Ingrediente> converterIngredientes(List<EstoqueRegister> listEstoqueRegister){
         return listEstoqueRegister.stream().map(ingrediente -> ingredienteRepository.findByNome(ingrediente.nomeIngrediente()).orElseThrow(()-> new IllegalArgumentException("Ingrediente não cadastrado")))
                 .toList();
     }
+
+
 
 }

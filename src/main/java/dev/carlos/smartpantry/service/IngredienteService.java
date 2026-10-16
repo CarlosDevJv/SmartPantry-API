@@ -23,7 +23,8 @@ public class IngredienteService {
     }
 
     public void insertAll(List<IngredienteRegister> list){
-        List<Ingrediente> ingredientes = list.stream().map(ingredienteRegister -> converterDto(ingredienteRegister))
+        List<Ingrediente> ingredientes = list.stream()
+                .map(ingredienteRegister -> converterDto(ingredienteRegister))
                 .toList();
         ingredienteRepository.saveAll(ingredientes);
     }

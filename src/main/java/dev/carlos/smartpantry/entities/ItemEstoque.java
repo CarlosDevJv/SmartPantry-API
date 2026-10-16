@@ -29,6 +29,7 @@ public class ItemEstoque {
     private BigDecimal quantidade;
     @Column(name = "datavalidade")
     private LocalDate dataValidade;
+    @Enumerated(EnumType.STRING)
     private StatusIngrediente status;
 
 

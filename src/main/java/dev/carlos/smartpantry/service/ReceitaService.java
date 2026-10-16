@@ -62,8 +62,8 @@ public class ReceitaService {
 
         SystemMessage systemMessage = new SystemMessage("""
                 Você não deve ultrapassar os 1500 caracteres para o modo de preparo.
-                A descrição sobre o que é a receita é desnecessária dentro do modo de preparo""");
-        promptTemplate.add("lista", estoqueService.findAllByUser(email).stream().collect(Collectors.joining("\n")));
+                A descrição sobre o que é a receita é desnecessária dentro do modo de preparo.""");
+        promptTemplate.add("lista", estoqueRepository.findAllIngridientes().stream().collect(Collectors.joining("\n")));
         return chatClient.prompt()
                 .system(systemMessage.toString())
                 .user(promptTemplate.render())
