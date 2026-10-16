@@ -81,5 +81,16 @@ public class EstoqueService {
     }
 
 
+    @Scheduled(cron = "${api.cron.expression}")
+    public List<ItemEstoque> vencimentoAutomatico(){
+        List<ItemEstoque> lista = estoqueRepository.prazoVencimento(LocalDate.now());
+        lista.stream()
+                .forEach(itemEstoque -> itemEstoque.setStatus(StatusIngrediente.VENCIDO));
+        estoqueRepository.saveAll(lista);
+        return lista;
+
+    }
+
+
 
 }

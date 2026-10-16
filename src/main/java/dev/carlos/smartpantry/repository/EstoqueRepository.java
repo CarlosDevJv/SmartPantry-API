@@ -34,6 +34,9 @@ public interface EstoqueRepository extends JpaRepository<ItemEstoque, Long> {
     @Query("""
             SELECT estoque.ingrediente_id.nome
             FROM ItemEstoque as estoque
+            WHERE estoque.status in ('DISPONIVEL', 'disponivel')
             """)
     List<String>findAllIngridientes();
+
+
 }
