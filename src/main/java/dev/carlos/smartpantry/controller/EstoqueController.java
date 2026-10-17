@@ -1,7 +1,6 @@
 package dev.carlos.smartpantry.controller;
 
 import dev.carlos.smartpantry.entities.dto.EstoqueRegister;
-import dev.carlos.smartpantry.entities.dto.IngredienteRegister;
 import dev.carlos.smartpantry.service.EstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +31,4 @@ public class EstoqueController {
 //        return ResponseEntity.ok().body(estoqueService.findAllByUser(email));
 //    }
 
-//    @GetMapping("/validadeIngredientes/{email}")
-//    public ResponseEntity validade(@PathVariable String email){
-//        System.out.println(estoqueService.vencimentoAutomatico(email));
-//        return ResponseEntity.ok().body(estoqueService.vencimentoAutomatico(email));
-//    }
 }

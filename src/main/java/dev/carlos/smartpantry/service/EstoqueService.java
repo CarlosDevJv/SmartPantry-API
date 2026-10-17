@@ -4,6 +4,7 @@ import dev.carlos.smartpantry.entities.Ingrediente;
 import dev.carlos.smartpantry.entities.ItemEstoque;
 import dev.carlos.smartpantry.entities.User;
 import dev.carlos.smartpantry.entities.dto.EstoqueRegister;
+import dev.carlos.smartpantry.entities.dto.IngredienteVencimento;
 import dev.carlos.smartpantry.entities.enums.StatusIngrediente;
 import dev.carlos.smartpantry.repository.EstoqueRepository;
 import dev.carlos.smartpantry.repository.IngredienteRepository;
@@ -11,6 +12,8 @@ import dev.carlos.smartpantry.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +22,7 @@ import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,6 +33,8 @@ public class EstoqueService {
     UserRepository userRepository;
     @Autowired
     IngredienteRepository ingredienteRepository;
+    @Autowired
+    JavaMailSender mailSender;
 
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -89,6 +95,33 @@ public class EstoqueService {
         estoqueRepository.saveAll(lista);
         return lista;
 
+    }
+
+    @Scheduled(cron = "${api.cron.expression}")
+    public void proximoVencimento(){
+        List<IngredienteVencimento> corpoEmail = estoqueRepository.findAllProximoVencimento(LocalDate.now(), LocalDate.now().plusDays(15));
+        if (corpoEmail != null){
+            var message = new SimpleMailMessage();
+            message.setFrom("noreplay@email.com");
+            message.setTo("teste@gmail.com");
+            message.setSubject("Ingredientes próximos ao prazo de validade");
+            message.setText("CUIDADO\n PRODUTOS PRÓXIMO DA DATA DE VALIDADE:\n"  + listaVencimento(corpoEmail));
+            mailSender.send(message);
+        }
+    }
+
+    public String listaVencimento(List<IngredienteVencimento> ingredienteVencimentos) {
+        StringBuilder sb = new StringBuilder();
+
+        for (IngredienteVencimento ingrediente : ingredienteVencimentos) {
+            sb.append("- ")
+                    .append(ingrediente.ingrediente())
+                    .append(" (Vence em: ")
+                    .append(ingrediente.dataValidade())
+                    .append(")\n");
+        }
+
+        return sb.toString();
     }
 
 

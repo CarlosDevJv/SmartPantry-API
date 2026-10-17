@@ -3,6 +3,7 @@ package dev.carlos.smartpantry.repository;
 import dev.carlos.smartpantry.entities.Ingrediente;
 import dev.carlos.smartpantry.entities.ItemEstoque;
 import dev.carlos.smartpantry.entities.User;
+import dev.carlos.smartpantry.entities.dto.IngredienteVencimento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,7 +37,17 @@ public interface EstoqueRepository extends JpaRepository<ItemEstoque, Long> {
             FROM ItemEstoque as estoque
             WHERE estoque.status in ('DISPONIVEL', 'disponivel')
             """)
-    List<String>findAllIngridientes();
+    List<String> findAllIngridientes();
+
+    @Query("""
+            SELECT estoque.ingrediente_id.nome, estoque.dataValidade
+            FROM ItemEstoque as estoque
+            WHERE estoque.status in ('DISPONIVEL', 'disponivel')
+            AND estoque.dataValidade BETWEEN :agora AND :prazo
+            """)
+    List<IngredienteVencimento> findAllProximoVencimento(
+            @Param("agora") LocalDate agora,
+            @Param("prazo") LocalDate prazo);
 
 
 }

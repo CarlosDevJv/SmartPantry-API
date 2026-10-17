@@ -33,4 +33,12 @@ public class ItemEstoque {
     private StatusIngrediente status;
 
 
+    public String toStringEmail(){
+        return ingrediente_id.getNome() + " Validade: " + dataValidade;
+    }
+
+    public ItemEstoque(String ingrediente, LocalDate dataValidade){
+        this.dataValidade = dataValidade;
+    }
+
 }
